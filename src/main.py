@@ -5,7 +5,7 @@ class Product:
     """Класс для описания товара в магазине."""
 
     def __init__(
-            self, name: str, description: str, price: float, quantity: int
+        self, name: str, description: str, price: float, quantity: int
     ) -> None:
         """
         Инициализация товара.
@@ -50,25 +50,25 @@ def load_data_from_json(file_path: str) -> list:
     Дополнительное задание: загрузка данных из JSON файла.
     Создает объекты Category и Product на основе данных из файла.
     """
-    with open(file_path, 'r', encoding='utf-8') as file:
+    with open(file_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     categories = []
     for cat_data in data:
         products = []
-        for prod_data in cat_data.get('products', []):
+        for prod_data in cat_data.get("products", []):
             product = Product(
-                name=prod_data['name'],
-                description=prod_data['description'],
-                price=prod_data['price'],
-                quantity=prod_data['quantity']
+                name=prod_data["name"],
+                description=prod_data["description"],
+                price=prod_data["price"],
+                quantity=prod_data["quantity"],
             )
             products.append(product)
 
         category = Category(
-            name=cat_data['name'],
-            description=cat_data['description'],
-            products=products
+            name=cat_data["name"],
+            description=cat_data["description"],
+            products=products,
         )
         categories.append(category)
 
@@ -78,8 +78,7 @@ def load_data_from_json(file_path: str) -> list:
 if __name__ == "__main__":
     # Код из скриншота для проверки работоспособности
     product1 = Product(
-        "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера",
-        180000.0, 5
+        "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5
     )
     product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
     product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
@@ -92,7 +91,7 @@ if __name__ == "__main__":
     category1 = Category(
         "Смартфоны",
         "Смартфоны, как средство не только коммуникации...",
-        [product1, product2, product3]
+        [product1, product2, product3],
     )
 
     print(category1.name == "Смартфоны")
@@ -102,11 +101,7 @@ if __name__ == "__main__":
     print(category1.product_count)
 
     product4 = Product('55" QLED 4K', "Фоновая подсветка", 123000.0, 7)
-    category2 = Category(
-        "Телевизоры",
-        "Современный телевизор...",
-        [product4]
-    )
+    category2 = Category("Телевизоры", "Современный телевизор...", [product4])
 
     print(category2.name)
     print(category2.description)
