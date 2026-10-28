@@ -55,3 +55,21 @@ def test_category_product_counting():
     Category("Пустая категория", "Описание 3", [])
     assert Category.category_count == 3
     assert Category.product_count == 3
+
+def test_category_with_empty_products():
+    """Тест создания категории с пустым списком товаров."""
+    category = Category("Пустая", "Описание", [])
+    assert category.name == "Пустая"
+    assert len(category.products) == 0
+
+
+def test_category_counters_increment():
+    """Проверка, что счетчики увеличиваются при создании категорий."""
+    initial_categories = Category.category_count
+    initial_products = Category.product_count
+
+    p1 = Product("Товар", "Описание", 100.0, 1)
+    Category("Новая", "Описание", [p1])
+
+    assert Category.category_count == initial_categories + 1
+    assert Category.product_count == initial_products + 1
