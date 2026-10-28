@@ -75,7 +75,7 @@ def load_data_from_json(file_path: str) -> list:
     return categories
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     # Код из скриншота для проверки работоспособности
     product1 = Product(
         "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5

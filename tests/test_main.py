@@ -73,3 +73,31 @@ def test_category_counters_increment():
 
     assert Category.category_count == initial_categories + 1
     assert Category.product_count == initial_products + 1
+
+
+import json
+from main import Product, Category, load_data_from_json  # добавьте load_data_from_json в импорт сверху
+
+
+def test_load_data_from_json(tmp_path):
+    """Тест загрузки данных из JSON."""
+    # Создаем временный json файл
+    file_path = tmp_path / "test_products.json"
+    data = [
+        {
+            "name": "Смартфоны",
+            "description": "Описание",
+            "products": [
+                {"name": "Товар", "description": "Описание", "price": 10.0, "quantity": 1}
+            ]
+        }
+    ]
+    file_path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+    # Вызываем функцию
+    categories = load_data_from_json(file_path)
+
+    # Проверяем результат
+    assert len(categories) == 1
+    assert categories[0].name == "Смартфоны"
+    assert len(categories[0].products) == 1
