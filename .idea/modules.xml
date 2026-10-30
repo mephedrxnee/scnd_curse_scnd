@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/WelcomeScreen.iml" filepath="$PROJECT_DIR$/.idea/WelcomeScreen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/scnd_curse_scnd.iml" filepath="$PROJECT_DIR$/.idea/scnd_curse_scnd.iml" />
+    </modules>
+  </component>
+</project>
