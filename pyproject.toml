@@ -1,22 +1,22 @@
 [project]
-name = "scnd_course_scnd"
+name = "scnd_curse_scnd"
 version = "0.1.0"
 
 [tool.poetry]
-name = "scnd_course_scnd"
+name = "scnd_curse_scnd"
 version = "0.1.0"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.12"
 pytest = "^9.2.0"
 black = "^26.10.1"
 
-[dependency-groups]
-dev = [
-    "pytest-cov (>=7.1.0,<8.0.0)",
-    "flake8 (>=7.4.1,<8.0.0)",
-    "isort (>=9.0.2,<10.0.0)"
-]
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.2.0"
+pytest-cov = "^7.1.0"
+flake8 = "^7.4.1"
+isort = "^9.0.2"
 
 [tool.pytest.ini_options]
 pythonpath = "src"
