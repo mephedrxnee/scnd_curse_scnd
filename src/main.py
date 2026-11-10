@@ -9,10 +9,33 @@ class Product:
     ) -> None:
         self.name = name
         self.description = description
+<<<<<<< HEAD
+        self.__price = price
+        self.quantity = quantity
+
+    def __str__(self) -> str:
+        """Строковое отображение товара (Задание 1)."""
+        return (
+            f"{self.name}, {self.price} руб. "
+            f"Остаток: {self.quantity} шт."
+        )
+
+    def __add__(self, other: 'Product') -> float:
+        """Магический метод сложения товаров (Задание 2)."""
+        if not isinstance(other, Product):
+            raise TypeError("Складывать можно только объекты Product")
+
+        # Стоимость всех единиц на складе: цена * количество
+        total_cost_self = self.price * self.quantity
+        total_cost_other = other.price * other.quantity
+        return total_cost_self + total_cost_other
+
+=======
         # Делаем цену приватной
         self.__price = price
         self.quantity = quantity
 
+>>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
     @property
     def price(self) -> float:
         """Геттер для цены."""
@@ -24,7 +47,10 @@ class Product:
         if new_price <= 0:
             print("Цена не должна быть нулевая или отрицательная")
         elif new_price < self.__price:
+<<<<<<< HEAD
+=======
             # Доп. задание: подтверждение понижения цены
+>>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
             answer = input("Вы уверены, что хотите понизить цену? (y/n): ")
             if answer.lower() == 'y':
                 self.__price = new_price
@@ -37,7 +63,10 @@ class Product:
         if products_list:
             for p in products_list:
                 if p.name == product_data['name']:
+<<<<<<< HEAD
+=======
                     # Если товар есть, суммируем количество и берем макс. цену
+>>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
                     p.quantity += product_data['quantity']
                     p.price = max(p.price, product_data['price'])
                     return p
@@ -59,12 +88,24 @@ class Category:
     def __init__(self, name: str, description: str, products: list = None) -> None:
         self.name = name
         self.description = description
+<<<<<<< HEAD
+=======
         # Делаем список товаров приватным
+>>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
         self.__products = products if products is not None else []
 
         Category.category_count += 1
         Category.product_count += len(self.__products)
 
+<<<<<<< HEAD
+    def __str__(self) -> str:
+        """Строковое отображение категории (Задание 1)."""
+        # Считаем общее количество товаров на складе
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
+
+=======
+>>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
     def add_product(self, product: Product) -> None:
         """Метод для добавления товара в категорию."""
         self.__products.append(product)
@@ -72,6 +113,30 @@ class Category:
 
     @property
     def products(self) -> str:
+<<<<<<< HEAD
+        """Геттер для вывода списка товаров (оптимизирован)."""
+        # Теперь используем магический метод __str__ самого товара
+        return "".join(f"{product}\n" for product in self.__products)
+
+
+class CategoryIterator:
+    """Итератор для перебора товаров категории (Доп. задание)."""
+
+    def __init__(self, category: Category) -> None:
+        self.category = category
+        self.index = 0
+
+    def __iter__(self) -> 'CategoryIterator':
+        return self
+
+    def __next__(self) -> Product:
+        # Обращаемся к приватному атрибуту категории
+        if self.index < len(self.category._Category__products):
+            product = self.category._Category__products[self.index]
+            self.index += 1
+            return product
+        raise StopIteration
+=======
         """Геттер для вывода списка товаров в виде строки."""
         result = ""
         for product in self.__products:
@@ -80,6 +145,7 @@ class Category:
                 f"Остаток: {product.quantity} шт.\n"
             )
         return result
+>>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
 
 
 def load_data_from_json(file_path: str) -> list:
@@ -110,7 +176,17 @@ def load_data_from_json(file_path: str) -> list:
 
 
 if __name__ == "__main__":  # pragma: no cover
+<<<<<<< HEAD
+    p1 = Product("Samsung Galaxy S23 Ultra", "256GB", 180000.0, 5)
+    p2 = Product("Iphone 15", "512GB", 210000.0, 8)
+    cat = Category("Смартфоны", "Описание", [p1, p2])
+
+    print(p1)  # Проверка __str__ для Product
+    print(cat)  # Проверка __str__ для Category
+    print(p1 + p2)  # Проверка __add__
+=======
     # Проверка работоспособности
     product1 = Product("Samsung Galaxy S23 Ultra", "256GB", 180000.0, 5)
     category1 = Category("Смартфоны", "Описание смартфонов", [product1])
     print(category1.products)
+>>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
