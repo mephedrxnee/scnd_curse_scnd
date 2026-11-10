@@ -1,1 +1,0 @@
-# scnd_curse_scnd
