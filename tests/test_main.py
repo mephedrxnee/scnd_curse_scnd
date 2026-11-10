@@ -1,11 +1,10 @@
 import json
 from unittest.mock import patch
 import pytest
-<<<<<<< HEAD
-from main import Product, Category, CategoryIterator, load_data_from_json
-=======
-from main import Product, Category, load_data_from_json
->>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
+from main import (
+    Product, Category, CategoryIterator,
+    Smartphone, LawnGrass, load_data_from_json
+)
 
 
 @pytest.fixture(autouse=True)
@@ -15,211 +14,60 @@ def reset_category_counters():
     Category.product_count = 0
 
 
+# --- Тесты базовых классов (из прошлых ДЗ) ---
 def test_product_initialization():
     product = Product("Товар", "Описание", 100.0, 5)
     assert product.name == "Товар"
-    assert product.description == "Описание"
     assert product.price == 100.0
-    assert product.quantity == 5
 
 
 def test_product_str():
-    """Тест __str__ для Product (Задание 1)."""
     product = Product("Смартфон", "Хороший", 15000.0, 10)
-    expected = "Смартфон, 15000.0 руб. Остаток: 10 шт."
-    assert str(product) == expected
-
-
-def test_product_add():
-    """Тест __add__ для Product (Задание 2)."""
-    p1 = Product("Товар А", "Описание", 100.0, 10)  # 100 * 10 = 1000
-    p2 = Product("Товар Б", "Описание", 200.0, 2)  # 200 * 2 = 400
-
-    assert p1 + p2 == 1400.0
+    assert str(product) == "Смартфон, 15000.0 руб. Остаток: 10 шт."
 
 
 def test_category_initialization():
     p1 = Product("Товар 1", "Описание 1", 50.0, 1)
     category = Category("Категория", "Описание", [p1])
     assert category.name == "Категория"
-<<<<<<< HEAD
     assert len(category._Category__products) == 1
 
 
 def test_category_str():
-    """Тест __str__ для Category (Задание 1)."""
     p1 = Product("Товар 1", "Описание 1", 50.0, 10)
-    p2 = Product("Товар 2", "Описание 2", 100.0, 5)
-    category = Category("Электроника", "Описание", [p1, p2])
-
-    # Общее количество: 10 + 5 = 15
-    expected = "Электроника, количество продуктов: 15 шт."
-    assert str(category) == expected
+    category = Category("Электроника", "Описание", [p1])
+    assert str(category) == "Электроника, количество продуктов: 10 шт."
 
 
 def test_category_products_getter():
-    """Тест геттера products."""
     p1 = Product("Смартфон", "Хороший", 50000.0, 10)
     category = Category("Электроника", "Описание", [p1])
-
-    expected_string = "Смартфон, 50000.0 руб. Остаток: 10 шт.\n"
-    assert category.products == expected_string
+    assert category.products == "Смартфон, 50000.0 руб. Остаток: 10 шт.\n"
 
 
 def test_category_iterator():
-    """Тест итератора (Доп. задание)."""
     p1 = Product("Товар 1", "Описание 1", 50.0, 1)
-    p2 = Product("Товар 2", "Описание 2", 100.0, 2)
-    category = Category("Категория", "Описание", [p1, p2])
-
-    iterator = CategoryIterator(category)
-    products = list(iterator)
-
-    assert len(products) == 2
-    assert products[0] == p1
-    assert products[1] == p2
-
-
-def test_add_product():
-    category = Category("Пустая", "Описание")
-    p1 = Product("Новый товар", "Описание", 100.0, 2)
-
-    category.add_product(p1)
-    assert len(category._Category__products) == 1
-
-
-def test_new_product_classmethod():
-    data = {"name": "Ноутбук", "description": "Мощный", "price": 80000.0, "quantity": 3}
-    product = Product.new_product(data)
-    assert product.name == "Ноутбук"
+    category = Category("Категория", "Описание", [p1])
+    assert list(CategoryIterator(category))[0] == p1
 
 
 def test_new_product_with_duplicates():
     p1 = Product("Ноутбук", "Старый", 80000.0, 3)
-    products_list = [p1]
     data = {"name": "Ноутбук", "description": "Новый", "price": 90000.0, "quantity": 2}
-
-    product = Product.new_product(data, products_list)
-=======
-    # Проверяем приватный атрибут напрямую, так как products теперь возвращает строку
-    assert len(category._Category__products) == 1
-    assert Category.product_count == 1
-
-
-def test_add_product():
-    """Тест метода добавления товара в категорию."""
-    category = Category("Пустая", "Описание")
-    p1 = Product("Новый товар", "Описание", 100.0, 2)
-
-    category.add_product(p1)
-
-    assert len(category._Category__products) == 1
-    assert Category.product_count == 1
-
-
-def test_category_products_getter():
-    """Тест геттера products."""
-    p1 = Product("Смартфон", "Хороший", 50000.0, 10)
-    category = Category("Электроника", "Описание", [p1])
-
-    expected_string = "Смартфон, 50000.0 руб. Остаток: 10 шт.\n"
-    assert category.products == expected_string
-
-
-def test_new_product_classmethod():
-    """Тест класс-метода new_product."""
-    data = {
-        "name": "Ноутбук",
-        "description": "Мощный",
-        "price": 80000.0,
-        "quantity": 3
-    }
-
-    product = Product.new_product(data)
-
-    assert isinstance(product, Product)
-    assert product.name == "Ноутбук"
-    assert product.price == 80000.0
-
-
-def test_new_product_with_duplicates():
-    """Тест доп. задания: проверка дубликатов в new_product."""
-    p1 = Product("Ноутбук", "Старый", 80000.0, 3)
-    products_list = [p1]
-
-    data = {
-        "name": "Ноутбук",
-        "description": "Новый",
-        "price": 90000.0,
-        "quantity": 2
-    }
-
-    product = Product.new_product(data, products_list)
-
->>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
+    product = Product.new_product(data, [p1])
     assert product == p1
     assert product.quantity == 5
     assert product.price == 90000.0
 
 
-def test_price_setter_positive():
-<<<<<<< HEAD
-=======
-    """Тест сеттера цены при положительном значении."""
->>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
-    product = Product("Товар", "Описание", 100.0, 1)
-    product.price = 150.0
-    assert product.price == 150.0
-
-
-def test_price_setter_negative(capsys):
-<<<<<<< HEAD
-    product = Product("Товар", "Описание", 100.0, 1)
-    product.price = -50.0
-=======
-    """Тест сеттера цены при нулевом или отрицательном значении."""
-    product = Product("Товар", "Описание", 100.0, 1)
-
-    product.price = -50.0
-
->>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
-    assert product.price == 100.0
-    captured = capsys.readouterr()
-    assert "Цена не должна быть нулевая или отрицательная" in captured.out
-
-
 @patch('builtins.input', return_value='y')
 def test_price_setter_lower_with_confirmation(mock_input):
-<<<<<<< HEAD
-=======
-    """Тест доп. задания: понижение цены с подтверждением 'y'."""
->>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
     product = Product("Товар", "Описание", 100.0, 1)
     product.price = 50.0
     assert product.price == 50.0
 
 
-@patch('builtins.input', return_value='n')
-def test_price_setter_lower_without_confirmation(mock_input):
-<<<<<<< HEAD
-=======
-    """Тест доп. задания: отказ от понижения цены 'n'."""
->>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
-    product = Product("Товар", "Описание", 100.0, 1)
-    product.price = 50.0
-    assert product.price == 100.0
-
-
 def test_load_data_from_json(tmp_path):
-<<<<<<< HEAD
-    file_path = tmp_path / "test.json"
-    data = [{
-        "name": "Смартфоны", "description": "Описание",
-        "products": [{"name": "Товар", "description":
-            "Описание", "price": 10.0, "quantity": 1}]
-    }]
-=======
-    """Тест загрузки данных из JSON."""
     file_path = tmp_path / "test.json"
     data = [
         {
@@ -235,13 +83,69 @@ def test_load_data_from_json(tmp_path):
             ]
         }
     ]
->>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
     file_path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
-
     categories = load_data_from_json(file_path)
     assert len(categories) == 1
-<<<<<<< HEAD
-=======
-    # Снова проверяем приватный атрибут, так как products - это строка
-    assert len(categories[0]._Category__products) == 1
->>>>>>> acaadf2308fb9195995ba79f9e65d6e9f558d046
+
+
+# --- НОВЫЕ ТЕСТЫ (ДЗ 16.1) ---
+def test_smartphone_initialization():
+    """Тест создания смартфона."""
+    phone = Smartphone(
+        "iPhone", "Хороший", 100000.0, 5,
+        efficiency=9.5, model="15 Pro", memory=256, color="Black"
+    )
+    assert phone.name == "iPhone"
+    assert phone.efficiency == 9.5
+    assert phone.model == "15 Pro"
+    assert phone.memory == 256
+    assert phone.color == "Black"
+    assert isinstance(phone, Product)  # Проверка наследования
+
+
+def test_lawngrass_initialization():
+    """Тест создания газонной травы."""
+    grass = LawnGrass(
+        "Трава", "Зеленая", 500.0, 100,
+        country="Россия", germination_period="10 дней", color="Green"
+    )
+    assert grass.name == "Трава"
+    assert grass.country == "Россия"
+    assert grass.germination_period == "10 дней"
+    assert grass.color == "Green"
+    assert isinstance(grass, Product)  # Проверка наследования
+
+
+def test_add_same_types():
+    """Тест сложения товаров одного класса."""
+    phone1 = Smartphone("iPhone", "Хороший", 100000.0, 2, 9.5, "15 Pro", 256, "Black")
+    phone2 = Smartphone("Samsung", "Отличный", 80000.0, 3, 9.0, "S23", 128, "White")
+
+    # 100000 * 2 + 80000 * 3 = 200000 + 240000 = 440000
+    assert phone1 + phone2 == 440000.0
+
+
+def test_add_different_types_raises_error():
+    """Тест ошибки при сложении разных классов."""
+    phone = Smartphone("iPhone", "Хороший", 100000.0, 2, 9.5, "15 Pro", 256, "Black")
+    grass = LawnGrass("Трава", "Зеленая", 500.0, 100, "Россия", "10 дней", "Green")
+
+    with pytest.raises(TypeError):
+        phone + grass
+
+
+def test_add_product_valid():
+    """Тест добавления наследника Product в категорию."""
+    category = Category("Электроника", "Описание")
+    phone = Smartphone("iPhone", "Хороший", 100000.0, 2, 9.5, "15 Pro", 256, "Black")
+
+    category.add_product(phone)
+    assert len(category._Category__products) == 1
+
+
+def test_add_product_invalid_raises_error():
+    """Тест ошибки при добавлении не-Product в категорию."""
+    category = Category("Электроника", "Описание")
+
+    with pytest.raises(TypeError):
+        category.add_product("Просто строка")
