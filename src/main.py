@@ -2,12 +2,21 @@ import json
 from abc import ABC, abstractmethod
 
 
+class ZeroQuantityError(Exception):
+    """Пользовательское исключение для товаров с нулевым количеством."""
+    pass
+
+
 class BaseProduct(ABC):
     """Базовый абстрактный класс для продуктов."""
 
     def __init__(
         self, name: str, description: str, price: float, quantity: int
     ) -> None:
+        if quantity == 0:
+            raise ValueError(
+                "Товар с нулевым количеством не может быть добавлен"
+            )
         self.name = name
         self.description = description
         self.__price = price
@@ -30,19 +39,16 @@ class BaseProduct(ABC):
 
     @abstractmethod
     def __str__(self) -> str:
-        """Абстрактный метод строкового отображения."""
         pass
 
     @abstractmethod
     def __add__(self, other: "BaseProduct") -> float:
-        """Абстрактный метод сложения."""
         pass
 
     @classmethod
     def new_product(
         cls, product_data: dict, products_list: list = None
     ) -> "BaseProduct":
-        """Класс-метод для создания товара из словаря."""
         if products_list:
             for p in products_list:
                 if p.name == product_data["name"]:
@@ -59,7 +65,7 @@ class BaseProduct(ABC):
 
 
 class ReprMixin:
-    """Миксин для вывода информации о созданном объекте (Задание 2)."""
+    """Миксин для вывода информации о созданном объекте."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,7 +79,7 @@ class ReprMixin:
 
 
 class Product(ReprMixin, BaseProduct):
-    """Класс товара, наследующий абстрактный класс и миксин."""
+    """Класс товара."""
 
     def __str__(self) -> str:
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
@@ -85,18 +91,9 @@ class Product(ReprMixin, BaseProduct):
 
 
 class Smartphone(Product):
-    """Класс смартфона."""
-
     def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        efficiency: float,
-        model: str,
-        memory: int,
-        color: str,
+        self, name: str, description: str, price: float, quantity: int,
+        efficiency: float, model: str, memory: int, color: str,
     ) -> None:
         super().__init__(name, description, price, quantity)
         self.efficiency = efficiency
@@ -106,17 +103,9 @@ class Smartphone(Product):
 
 
 class LawnGrass(Product):
-    """Класс газонной травы."""
-
     def __init__(
-        self,
-        name: str,
-        description: str,
-        price: float,
-        quantity: int,
-        country: str,
-        germination_period: str,
-        color: str,
+        self, name: str, description: str, price: float, quantity: int,
+        country: str, germination_period: str, color: str,
     ) -> None:
         super().__init__(name, description, price, quantity)
         self.country = country
@@ -125,7 +114,7 @@ class LawnGrass(Product):
 
 
 class BaseEntity(ABC):
-    """Базовый абстрактный класс для Категории и Заказа (Доп. задание)."""
+    """Базовый абстрактный класс для Категории и Заказа."""
 
     def __init__(self, name: str):
         self.name = name
@@ -156,13 +145,33 @@ class Category(BaseEntity):
         return f"{self.name}, количество продуктов: {total_quantity} шт."
 
     def add_product(self, product: Product) -> None:
-        if not isinstance(product, Product):
-            raise TypeError(
-                "Можно добавлять только объекты класса Product "
-                "и его наследников"
-            )
-        self.__products.append(product)
-        Category.product_count += 1
+        """Добавление товара с обработкой исключений (Доп. задание)."""
+        try:
+            if not isinstance(product, Product):
+                raise TypeError(
+                    "Можно добавлять только объекты класса Product "
+                    "и его наследников"
+                )
+            if product.quantity == 0:
+                raise ZeroQuantityError(
+                    "Товар с нулевым количеством не может быть добавлен"
+                )
+        except (ZeroQuantityError, TypeError) as e:
+            print(f"Ошибка: {e}")
+        else:
+            self.__products.append(product)
+            Category.product_count += 1
+            print(f"Товар '{product.name}' успешно добавлен")
+        finally:
+            print("Обработка добавления товара завершена")
+
+    def average_price(self) -> float:
+        """Подсчет среднего ценника всех товаров (Задание 2)."""
+        try:
+            total_price = sum(p.price for p in self.__products)
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            return 0
 
     @property
     def products(self) -> str:
@@ -170,13 +179,15 @@ class Category(BaseEntity):
 
 
 class Order(BaseEntity):
-    """Класс заказа (Доп. задание)."""
+    """Класс заказа."""
 
     def __init__(self, product: Product, quantity: int):
-        # Сначала проверяем тип
         if not isinstance(product, Product):
             raise TypeError("В заказ можно добавить только объект Product")
-        # И только потом используем product.name
+        if quantity == 0:
+            raise ZeroQuantityError(
+                "Товар с нулевым количеством не может быть добавлен"
+            )
         super().__init__(f"Заказ на {product.name}")
         self.product = product
         self.quantity = quantity
@@ -206,7 +217,6 @@ class CategoryIterator:
 
 
 def load_data_from_json(file_path: str) -> list:
-    """Функция загрузки данных из JSON."""
     with open(file_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
